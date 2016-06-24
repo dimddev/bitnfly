@@ -13,7 +13,7 @@ bitnfly_dev = [
 
 setup(
     name='bitnfly',
-    version='0.0.1',
+    version='0.0.2',
     description='BitnFly is a mini API for working with bit flags',
     author='Dimitar Dimitrov',
     author_email='targolini@gmail.com',
