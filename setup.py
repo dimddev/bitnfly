@@ -19,7 +19,7 @@ setup(
     author_email='targolini@gmail.com',
     url='https://github.com/dimddev/bitnfly',
     packages=find_packages(),
-    test_suite='tests',
+    test_suite='BitnFly.tests',
     classifiers=[
         # How mature is this project? Common values are
         #   3 - Alpha
