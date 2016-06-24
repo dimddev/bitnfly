@@ -17,18 +17,16 @@ class _BitnFlyOperation(object):
         A bitwise operator &
 
         :param other: can be a int, a str or a object which inherit from
-            BitsNFlyroles or BitsNFlySettings objects
+            BitnFly or it is a BitnFly
         :type other: int or str or object
         :return: True if other is set in self otherwise False
         :rtype: bool
         """
 
-        bits = self
-
-        if isinstance(other, int) and (bits.get(output=int) & other):
+        if isinstance(other, int) and (getattr(self, 'get')(output=int) & other):
             return True
 
-        elif isinstance(other, str) and bits._is_set(other):
+        elif isinstance(other, str) and getattr(self, '_is_set')(other):
             return True
 
         else:
