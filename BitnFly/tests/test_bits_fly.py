@@ -41,10 +41,25 @@ class TestBitsFly(unittest.TestCase):
         self.assertTrue(self.admin.get())
         self.assertTrue(self.admin.get() >= 0)
         self.assertEqual(255, self.admin.get())
+        self.assertFalse(self.admin.get(9))
+        self.assertFalse(self.admin.get(9))
+        self.assertFalse(self.admin.get(3))
+        self.assertEqual(0, self.admin.get(256))
         self.assertTrue(self.admin.get('admin'))
+        self.assertTrue(self.admin.get(1))
+        self.assertTrue(self.admin.get(2))
+        self.assertTrue(self.admin.get(4))
+        self.assertTrue(self.admin.get(8))
+        self.assertTrue(self.admin.get(16))
+        self.assertTrue(self.admin.get(32))
+        self.assertTrue(self.admin.get(64))
+        self.assertTrue(self.admin.get(128))
         self.assertFalse(self.admin.flip('anonymous').get('anonymous'))
         self.assertTrue(self.mod.get())
         self.assertTrue(self.mod.get() >= 0)
+
+        with self.assertRaises(TypeError):
+            self.admin.get(['1'])
 
     def test_init(self):
 
@@ -203,3 +218,33 @@ class TestBitsFly(unittest.TestCase):
 
         admin ^= 2
         self.assertFalse(admin & 2)
+
+    def test_or(self):
+
+        self.admin.reset()
+        self.admin.off()
+
+        self.admin |= 1
+        self.assertTrue(self.admin & 1)
+
+        self.admin |= [2, 4, 8]
+
+        self.assertTrue(self.admin & 2)
+        self.assertTrue(self.admin & 4)
+        self.assertTrue(self.admin & 8)
+
+        self.admin |= 'can_read'
+        self.assertTrue(self.admin & 16)
+
+        self.admin |= ['can_edit', 'can_publish', 'can_delete']
+        self.assertEqual(255, self.admin.get())
+
+    def test_repr(self):
+
+        admin = self.admin
+        admin.reset()
+        self.assertEqual('<BitnFly(255)>', repr(admin))
+
+    def test_getattr(self):
+        with self.assertRaises(AttributeError):
+            print(self.admin.nothere)
