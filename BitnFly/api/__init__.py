@@ -5,68 +5,22 @@ from collections import OrderedDict
 from math import log
 
 
-class _BitnFlyOperation(object):
-
-    """
-    This class providing a bitwise operation on object level
-    """
-
-    def __and__(self, other):
-
-        """
-        A bitwise operator &
-
-        :param other: can be a int, a str or a object which inherit from
-            BitnFly or it is a BitnFly
-        :type other: int or str or object
-        :return: True if other is set in self otherwise False
-        :rtype: bool
-        """
-
-        if isinstance(other, int) and (getattr(self, 'get')(output=int) & other):
-            return True
-
-        elif isinstance(other, str) and getattr(self, '_is_set')(other):
-            return True
-
-        else:
-            return False
-
-    def __or__(self, other):
-
-        """
-        A bitwise operator | still not implemented
-
-        :param other:
-        :type other:
-        :return:
-        :rtype:
-        """
-
-        pass
-
-    def __xor__(self, other):
-
-        """
-        A bitwise operator ^. Will turn on or off all bits in self with mask other
-
-        :param other: can be a int, str or a list
-        :type other: int, str, list
-        :return: object it self
-        :rtype: object
-        """
-        getattr(self, 'flip')(other)
-
-        return self
-
-
-class BitnFly(_BitnFlyOperation):
+class BitnFly(object):
 
     """
     A BitNFly - the main object
     """
 
     def __init__(self, options, **kwargs):
+
+        """
+        The constructor will configure all needed variables
+
+        :param options: list of strings, each value will be represented as pow(index, 2) from left to right
+        :type options: list
+        :param kwargs: a possible key is an 'output` with callable value eg. hex, bin; default is int
+        :type kwargs: dict
+        """
 
         assert isinstance(options, list), 'an options attribute must be a list'
 
@@ -78,8 +32,64 @@ class BitnFly(_BitnFlyOperation):
         self.__flags_swap_mask = 0x0
 
         self.__switch_state = True
+        self.__operation = '__xor__'
 
         self._init()
+
+    def __and__(self, other):
+
+        """
+        A bitwise operator &
+
+        :param other: can be an int, a str or an object which inherit from BitnFly or it is a BitnFly itself
+        :type other: int or str or object
+        :return: True if other is set in self otherwise False
+        :rtype: bool
+        """
+
+        if isinstance(other, int) and self.get(output=int) & other:
+            return True
+
+        elif isinstance(other, str) and self._is_set(other):
+            return True
+
+        elif isinstance(other, BitnFly):
+            raise NotImplementedError
+
+        else:
+            return False
+
+    def __or__(self, other):
+
+        """
+        A bitwise operator |
+
+        :param other: can be an int, a str, a list of int or a list of str
+        :type other: int, str, list
+        :return: self
+        :rtype: self
+        """
+
+        self.__operation = '__or__'
+
+        self._args_callback(other, callback_int=self._flip_bits, callback_str=self._flip_str)
+        return self
+
+    def __xor__(self, other):
+
+        """
+        A bitwise operator ^. Will turn on or off all bits in self with mask other
+
+        :param other: can be an int, a str, a list of int or a list of str
+        :type other: int, str, list
+        :return: object it self
+        :rtype: object
+        """
+
+        self.__operation = '__xor__'
+        self.flip(other)
+
+        return self
 
     def __str__(self):
         return str(self.get())
@@ -121,19 +131,37 @@ class BitnFly(_BitnFlyOperation):
         """
         if isinstance(bit_num, int):
 
-            bit_num = int(log(bit_num, 2))
+            if bit_num in self.__options.values():
 
-            self.__opt_flags ^= (1 << bit_num)
-            self.__flags_swap_mask ^= (1 << bit_num)
+                bit_num = int(log(bit_num, 2))
+
+                if self.__operation == '__xor__':
+
+                    self.__opt_flags ^= (1 << bit_num)
+                    self.__flags_swap_mask ^= (1 << bit_num)
+
+                else:
+
+                    self.__opt_flags |= (1 << bit_num)
+                    self.__flags_swap_mask |= (1 << bit_num)
 
         if isinstance(bit_num, list):
 
             for bit in bit_num:
 
-                bit = int(log(bit, 2))
+                if bit in self.__options.values():
 
-                self.__opt_flags ^= (1 << bit)
-                self.__flags_swap_mask ^= (1 << bit)
+                    bit = int(log(bit, 2))
+
+                    if self.__operation == '__xor__':
+
+                        self.__opt_flags ^= (1 << bit)
+                        self.__flags_swap_mask ^= (1 << bit)
+
+                    else:
+
+                        self.__opt_flags |= (1 << bit)
+                        self.__flags_swap_mask |= (1 << bit)
 
     def _flip_str(self, bit_name):
 
@@ -150,16 +178,32 @@ class BitnFly(_BitnFlyOperation):
         if isinstance(bit_name, str):
 
             bit_name = bit_name.upper()
-            self.__opt_flags ^= (1 << list(self.__options.keys()).index(bit_name))
-            self.__flags_swap_mask ^= (1 << list(self.__options.keys()).index(bit_name))
+
+            if self.__operation == '__xor__':
+
+                self.__opt_flags ^= (1 << list(self.__options.keys()).index(bit_name))
+                self.__flags_swap_mask ^= (1 << list(self.__options.keys()).index(bit_name))
+
+            else:
+
+                self.__opt_flags |= (1 << list(self.__options.keys()).index(bit_name))
+                self.__flags_swap_mask |= (1 << list(self.__options.keys()).index(bit_name))
 
         elif isinstance(bit_name, list):
 
             for bit in bit_name:
 
                 bit = bit.upper()
-                self.__opt_flags ^= (1 << list(self.__options.keys()).index(bit))
-                self.__flags_swap_mask ^= (1 << list(self.__options.keys()).index(bit))
+
+                if self.__operation == '__xor__':
+
+                    self.__opt_flags ^= (1 << list(self.__options.keys()).index(bit))
+                    self.__flags_swap_mask ^= (1 << list(self.__options.keys()).index(bit))
+
+                else:
+
+                    self.__opt_flags |= (1 << list(self.__options.keys()).index(bit))
+                    self.__flags_swap_mask |= (1 << list(self.__options.keys()).index(bit))
 
     def _is_set(self, opt, result_as=None):
 
@@ -230,30 +274,28 @@ class BitnFly(_BitnFlyOperation):
         :return: a tuple of current bits and swap mask
         :rtype: tuple
         """
-        _flag, swap_mask = 0x0, 0x0
+        flag, swap_mask = 0x0, 0x0
 
         for key, val in self.__options.items():
 
-            if key in self.__options:
-                swap_mask |= val
+            swap_mask |= val
+            flag |= val
 
-            _flag |= val
-
-        self.__opt_flags, self.__flags_swap_mask = _flag, swap_mask
+        self.__opt_flags, self.__flags_swap_mask = flag, swap_mask
 
         return self.__opt_flags, self.__flags_swap_mask
 
-    def _flip_conditions(self, bits, **kwargs):
+    def _args_callback(self, bits, **kwargs):
 
         """
-        Still not implemented
+        A helper method, which care about all input arguments
 
-        :param bits:
+        :param bits: a user query ca be a str an int, or a list of str or list or ints
         :type bits:
-        :param callbacks:
-        :type callbacks:
-        :return:
-        :rtype:
+        :param kwargs: contains to required keys callback_int and callback_str, they must be callable
+        :type kwargs: dict
+        :return: void
+        :rtype: void
         """
         callback_int = kwargs.get('callback_int')
         callback_str = kwargs.get('callback_str')
@@ -269,13 +311,15 @@ class BitnFly(_BitnFlyOperation):
         """
         Will flip bit or bits to opposite side
 
-        :param bits: can be a int, a str, a list of int or a list of str
+        :param bits: can be an int, a str, a list of int or a list of str
         :type bits: int, str, list
         :return: object it self
         :rtype: object
         """
 
-        self._flip_conditions(bits, callback_int=self._flip_bits, callback_str=self._flip_str)
+        self.__operation = '__xor__'
+
+        self._args_callback(bits, callback_int=self._flip_bits, callback_str=self._flip_str)
         return self
 
     def off(self):
@@ -301,6 +345,7 @@ class BitnFly(_BitnFlyOperation):
         """
 
         if self.__switch_state is False:
+
             self.__opt_flags ^= self.__flags_swap_mask
             self.__switch_state = True
 
@@ -325,7 +370,7 @@ class BitnFly(_BitnFlyOperation):
         will try to extract it from the current bit mask
 
         :param bit:
-        :type bit: str
+        :type bit: str or int
         :param output:
         :type output:
         :return: a bit flag
@@ -340,9 +385,6 @@ class BitnFly(_BitnFlyOperation):
         elif isinstance(bit, int):
 
             if bit in self.__options.values():
-                return call(self.__opt_flags & bit)
-
-            elif bit not in self.__options.values() and bit <= sum(self.__options.values()):
                 return call(self.__opt_flags & bit)
 
             else:
