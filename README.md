@@ -119,6 +119,8 @@ Out[25]: <BitnFly(0b1111)>
 ```
 An BitbFly API also supports a simple bitwise operations on object level
 
+Bitwise `and`
+
 ```python
 In [26]: b & b.READ
 Out[26]: True
@@ -134,7 +136,11 @@ Out[29]: True
 
 In [30]: b
 Out[31]: <BitnFly(0b1111)>
+```
 
+Bitwise `xor`
+
+```python
 In [32]: b ^= b.READ
 
 In [33]: b
@@ -152,4 +158,42 @@ Out[37]: <BitnFly(0b1110)>
 
 In [38]: b.reset()
 Out[38]: <BitnFly(0b1111)>
+```
+
+Bitwise `or`
+
+```python
+
+In [39]: b.off()
+Out[39]: <BitnFly(0b0)>
+
+In [40]: b |= b.READ
+
+In [41]: b
+Out[41]: <BitnFly(0b1)>
+
+In [42]: b |= [b.WRITE, b.DELETE]
+
+In [43]: b
+Out[43]: <BitnFly(0b111)>
+
+In [44]: b |= b.EXECUTE
+
+In [45]: b
+Out[45]: <BitnFly(0b1111)>
+
+In [46]: b.off()
+Out[46]: <BitnFly(0b0)>
+
+In [47]: b |= 'read'
+
+In [48]: b
+Out[48]: <BitnFly(0b1)>
+
+In [49]: b |= ['write', 'delete', 'execute']
+
+In [50]: b
+Out[50]: <BitnFly(0b1111)>
+
+
 ```
