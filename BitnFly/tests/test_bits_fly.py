@@ -243,7 +243,13 @@ class TestBitsFly(unittest.TestCase):
 
         admin = self.admin
         admin.reset()
-        self.assertEqual('<BitnFly(255)>', repr(admin))
+        self.assertEqual(
+            'BitnFly({}, mask={})'.format(
+                [flag.lower() for flag in admin.flags().keys()],
+                admin.mask(),
+            ),
+            repr(admin)
+        )
 
     def test_getattr(self):
         with self.assertRaises(AttributeError):
