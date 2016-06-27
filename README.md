@@ -1,4 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/dimddev/bitnfly/badge.svg?branch=master)](https://coveralls.io/github/dimddev/bitnfly?branch=master)
+[![Build Status](https://travis-ci.org/dimddev/bitnfly.svg?branch=master)](https://travis-ci.org/dimddev/bitnfly)
 
 # BitnFly
 ### is a simple API for working with bit flags
