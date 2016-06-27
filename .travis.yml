@@ -9,9 +9,6 @@ python:
 install: pip install tox
 script: tox
 after_success:
-  - coveralls debug
-branches:
-  only:
-    - develop
+  - coveralls
 matrix:
   fast_finish: true
