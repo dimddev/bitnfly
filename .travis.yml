@@ -5,10 +5,11 @@ python:
  - "2.7"
  - "3.3"
  - "3.4"
- - "3.5"
  - "pypy"
 install: pip install tox
 script: tox
+after_success:
+  - coveralls
 branches:
   only:
     - develop
