@@ -9,6 +9,8 @@ python:
 install: pip install tox
 script: tox
 after_success:
+  - export COVERALLS_SERVICE_NAME=travis-ci
+  - export COVERALLS_REPO_TOKEN=cdSjlVdAnlNvgI25HQrCdVACU6fLOngpc
   - coveralls
 matrix:
   fast_finish: true
