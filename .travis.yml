@@ -8,5 +8,6 @@ python:
  - "pypy"
 install: pip install tox
 script: tox
+after_success: coveralls
 matrix:
   fast_finish: true
