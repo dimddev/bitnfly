@@ -6,7 +6,7 @@ python:
  - "3.3"
  - "3.4"
  - "pypy"
-install: pip install tox codecov
+install: pip install tox coveralls
 script: tox
 after_success: codecov
 matrix:
