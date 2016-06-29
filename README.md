@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/dimddev/bitnfly.svg?branch=master)](https://travis-ci.org/dimddev/bitnfly)
-
+[![Build Status](https://travis-ci.org/dimddev/bitnfly.svg?branch=master)](https://travis-ci.org/dimddev/bitnfly) [![Coverage Status](https://coveralls.io/repos/github/dimddev/bitnfly/badge.svg?branch=master)](https://coveralls.io/github/dimddev/bitnfly?branch=master) [![PyPI](https://img.shields.io/badge/python-2.6%2C%202.7%2C%203.3%2C%203.4%2C%20PyPy%20-blue.svg)](https://travis-ci.org/dimddev/bitnfly) 
 # BitnFly
 ### is a simple API for working with bit flags
 

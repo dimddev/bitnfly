@@ -44,8 +44,8 @@ class BitnFly(object):
         """
         A bitwise operator &
 
-        :param other: can be an int, a str or an object which inherit from BitnFly or it is a BitnFly itself
-        :type other: int or str or object
+        :param other: can be an int or a str
+        :type other: int or str
         :return: True if other is set in self otherwise False
         :rtype: bool
         """
@@ -55,9 +55,6 @@ class BitnFly(object):
 
         elif isinstance(other, str) and self._is_set(other):
             return True
-
-        elif isinstance(other, BitnFly):
-            return self.get(output=int) & other.get(output=int)
 
         else:
             return False
@@ -161,7 +158,6 @@ class BitnFly(object):
         :return:
         :rtype:
         """
-
         if bit in self.__options.values():
 
             bit = int(log(bit, 2))
@@ -184,7 +180,7 @@ class BitnFly(object):
 
     def _bitnfly_bits_list(self, bit_num):
         """
-
+        When we got a list ot bits
         :param bit_num:
         :type bit_num:
         :return:
@@ -239,7 +235,7 @@ class BitnFly(object):
 
     def _bitnfly_str_list(self, bit_name):
         """
-
+        When we got a list of strings
         :param bit_name:
         :type bit_name:
         :return:
@@ -258,7 +254,7 @@ class BitnFly(object):
 
     def _bitnfly_str_str(self, bit_name):
         """
-
+        Case with a string bit
         :param bit_name:
         :type bit_name:
         :return:
@@ -290,21 +286,6 @@ class BitnFly(object):
 
         elif isinstance(bit_name, list):
             self._bitnfly_str_list(bit_name)
-
-    def _bitnfly_obj(self, bit_name):
-
-        """
-        Flip BitnFly object
-
-        :param bit_name:
-        :type bit_name:
-        :return:
-        :rtype:
-        """
-
-        # TODO
-        print(bit_name)
-        pass
 
     def _is_set(self, opt, result_as=None):
 
@@ -368,18 +349,6 @@ class BitnFly(object):
 
         return self._is_type_list(bits, str)
 
-    def _is_bitnfly_list(self, bits):
-
-        """
-        Test if all elements in list are BitnFly objects
-
-        :param bits:
-        :type bits:
-        :return:
-        :rtype:
-        """
-        return self._is_type_list(bits, BitnFly)
-
     def _init(self):
 
         """
@@ -416,16 +385,12 @@ class BitnFly(object):
 
         callback_int = kwargs.get('callback_int')
         callback_str = kwargs.get('callback_str')
-        callback_obj = kwargs.get('callback_obj')
 
         if isinstance(bits, int) or (isinstance(bits, list) and self._is_digit_list(bits)):
             callback_int(bits)
 
         if isinstance(bits, str) or (isinstance(bits, list) and self._is_alpha_list(bits)):
             callback_str(bits)
-
-        if isinstance(bits, BitnFly) or (isinstance(bits, list) and self._is_bitnfly_list(bits)):
-            callback_obj(bits)
 
     def flip(self, bits):
 
@@ -444,7 +409,6 @@ class BitnFly(object):
             bits,
             callback_int=self._bitnfly_bits,
             callback_str=self._bitnfly_str,
-            callback_obj=self._bitnfly_obj
         )
         return self
 
@@ -523,9 +487,19 @@ class BitnFly(object):
             raise TypeError('A bit argument can be int or a str')
 
     def flags(self):
+        """
+        Will return all flags in ordered dict
+        :return:
+        :rtype:
+        """
         return self.__options
 
     def mask(self):
+        """
+        Will return the current swap mask
+        :return:
+        :rtype:
+        """
         return self.__flags_swap_mask
 
 __all__ = [
