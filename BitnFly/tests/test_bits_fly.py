@@ -192,6 +192,9 @@ class TestBitsFly(unittest.TestCase):
 
         admin = self.admin
 
+        b = BitnFly(['lamp', 'contact', 'door', 'camera'], output=bin)
+        c = BitnFly(['read', 'delete', 'write', 'execute'], output=bin)
+
         self.assertTrue(admin & 1)
         self.assertTrue(admin & 'admin')
 
@@ -250,6 +253,10 @@ class TestBitsFly(unittest.TestCase):
             ),
             repr(admin)
         )
+
+    def test_str(self):
+        self.admin.reset()
+        self.assertEqual(str(self.admin), '255')
 
     def test_getattr(self):
         with self.assertRaises(AttributeError):
